@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, ButtonGroup } from '@material-ui/core';
-import { MdMyLocation, MdAdd, MdRemove } from 'react-icons/md';
+import { FaLocationArrow, FaPlus, FaMinus } from 'react-icons/fa';
 
 import Styles from './style';
 
@@ -36,18 +36,18 @@ const Controls = ({ onLocation, zoom, onZoom }) => {
           className={classes.button}
           onClick={onLocation}
         >
-          <MdMyLocation />
+          <FaLocationArrow />
         </Button>
       </Styles.GeoControl>
       <ButtonGroup
         variant="contained"
         aria-label="small contained button group"
       >
-        <Button onClick={zoomIn}>
-          <MdAdd />
+        <Button onClick={zoomIn} className={classes.button}>
+          <FaPlus />
         </Button>
-        <Button onClick={zoomOut}>
-          <MdRemove />
+        <Button onClick={zoomOut} className={classes.button}>
+          <FaMinus />
         </Button>
       </ButtonGroup>
     </Styles.Container>
