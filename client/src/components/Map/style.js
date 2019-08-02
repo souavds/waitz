@@ -12,16 +12,7 @@ export default {
     height: 100%;
     width: 100%;
   `,
-  GeoControl: styled.div`
-    position: absolute;
-    top: 0;
-    left: 0;
-    margin: 10px;
-    height: 40px;
-    width: 40px;
-    background: #fff;
-  `,
-  UserLocation: styled.div`
+  UserLocationMarker: styled.div`
     background-color: #1da1f2;
     width: 15px;
     height: 15px;

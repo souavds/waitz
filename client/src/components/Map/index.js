@@ -3,14 +3,20 @@ import GoogleMapReact from 'google-map-react';
 
 import produce from 'immer';
 
+import Controls from './controls';
+import ThemeUtils from '../../utils/theme';
 import Styles from './style';
 import MapStyle from './mapStyle';
 
 const ZOOM = 15;
 
 const createMapOptions = maps => ({
-  styles: MapStyle,
-  fullscreenControl: false
+  styles:
+    ThemeUtils.whichTheme() === 'dark'
+      ? MapStyle.darkTheme
+      : MapStyle.lightTheme,
+  fullscreenControl: false,
+  zoomControl: false
 });
 
 const Map = () => {
@@ -76,9 +82,15 @@ const Map = () => {
         defaultZoom={ZOOM}
         zoom={zoom}
       >
-        <Styles.UserLocation {...userLocation} />
+        <Styles.UserLocationMarker {...userLocation} />
       </GoogleMapReact>
-      <Styles.GeoControl onClick={centerUserLocation} />
+      <Controls
+        onLocation={centerUserLocation}
+        zoom={zoom}
+        onZoom={z => {
+          setZoom(z);
+        }}
+      />
     </Styles.Container>
   );
 };
