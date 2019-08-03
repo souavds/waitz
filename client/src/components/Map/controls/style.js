@@ -9,6 +9,6 @@ export default {
     margin: 25px 15px;
   `,
   GeoControl: styled.div`
-    margin-right: 10px;
+    margin-left: 10px;
   `
 };

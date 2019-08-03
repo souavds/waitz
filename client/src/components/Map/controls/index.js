@@ -30,15 +30,6 @@ const Controls = ({ onLocation, zoom, onZoom }) => {
 
   return (
     <Styles.Container>
-      <Styles.GeoControl>
-        <Button
-          variant="contained"
-          className={classes.button}
-          onClick={onLocation}
-        >
-          <FaLocationArrow />
-        </Button>
-      </Styles.GeoControl>
       <ButtonGroup
         variant="contained"
         aria-label="small contained button group"
@@ -50,6 +41,15 @@ const Controls = ({ onLocation, zoom, onZoom }) => {
           <FaMinus />
         </Button>
       </ButtonGroup>
+      <Styles.GeoControl>
+        <Button
+          variant="contained"
+          className={classes.button}
+          onClick={onLocation}
+        >
+          <FaLocationArrow />
+        </Button>
+      </Styles.GeoControl>
     </Styles.Container>
   );
 };

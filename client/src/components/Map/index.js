@@ -1,7 +1,9 @@
-import React, { useState, useEffect, createRef } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import GoogleMapReact from 'google-map-react';
 
-import produce from 'immer';
+import { Types as UserTypes } from '../../store/ducks/user';
+import { Types as MapTypes } from '../../store/ducks/map';
 
 import Controls from './controls';
 import ThemeUtils from '../../utils/theme';
@@ -19,53 +21,57 @@ const createMapOptions = maps => ({
   zoomControl: false
 });
 
-const Map = () => {
-  // const mapRef = createRef();
+const Map = ({ children }) => {
+  const dispatch = useDispatch();
+
   const [viewport, setViewport] = useState({
-    lat: -5.84690821710552,
-    lng: -35.20573598037466
-  });
-
-  const [zoom, setZoom] = useState(ZOOM);
-
-  const [userLocation, setUserLocation] = useState({
     lat: null,
     lng: null
   });
+  const [zoom, setZoom] = useState(ZOOM);
+  const userLocation = useSelector(state => state.user.location);
+
+  const centerUserLocation = () => {
+    setViewport({
+      lat: userLocation.lat,
+      lng: userLocation.lng
+    });
+    setZoom(ZOOM);
+  };
 
   useEffect(() => {
     navigator.geolocation.watchPosition(
       position => {
-        setUserLocation(
-          produce(userLocation, draft => {
-            draft.lat = position.coords.latitude;
-            draft.lng = position.coords.longitude;
-          })
-        );
+        centerUserLocation();
+        dispatch({
+          type: UserTypes.SET_LOCATION,
+          payload: {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          }
+        });
       },
       null,
       { enableHighAccurary: true }
     );
   });
 
-  const centerUserLocation = () => {
-    setViewport(
-      produce(viewport, draft => {
-        draft.lat = userLocation.lat;
-        draft.lng = userLocation.lng;
-      })
-    );
-    setZoom(ZOOM);
+  const handlerMapChange = map => {
+    setViewport({
+      lat: map.center.lat,
+      lng: map.center.lng
+    });
+    setZoom(map.zoom);
   };
 
-  const handlerMapChange = map => {
-    setViewport(
-      produce(viewport, draft => {
-        draft.lat = map.center.lat;
-        draft.lng = map.center.lng;
-      })
-    );
-    setZoom(map.zoom);
+  const onGMapsAPI = (map, maps) => {
+    dispatch({
+      type: MapTypes.SET_GMAPS,
+      payload: {
+        map,
+        api: maps
+      }
+    });
   };
 
   return (
@@ -76,6 +82,7 @@ const Map = () => {
           libraries: ['places']
         }}
         yesIWantToUseGoogleMapApiInternals
+        onGoogleApiLoaded={({ map, maps }) => onGMapsAPI(map, maps)}
         options={createMapOptions}
         onChange={handlerMapChange}
         center={{ ...viewport }}
@@ -83,6 +90,7 @@ const Map = () => {
         zoom={zoom}
       >
         <Styles.UserLocationMarker {...userLocation} />
+        {children}
       </GoogleMapReact>
       <Controls
         onLocation={centerUserLocation}
