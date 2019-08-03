@@ -8,7 +8,7 @@ export const Types = {
 const initialState = {
   gmaps: {
     map: null,
-    api: null
+    maps: null
   },
   nearbyPlaces: []
 };
@@ -17,12 +17,12 @@ export default function reducer(state = initialState, action) {
   switch (action.type) {
     case Types.SET_NEARBY_PLACES:
       return produce(state, draft => {
-        draft.nearbyPlaces.push(...action.payload.places);
+        draft.nearbyPlaces = action.payload.places;
       });
     case Types.SET_GMAPS:
       return produce(state, draft => {
         draft.gmaps.map = action.payload.map;
-        draft.gmaps.api = action.payload.api;
+        draft.gmaps.maps = action.payload.maps;
       });
     default:
       return state;
@@ -30,11 +30,11 @@ export default function reducer(state = initialState, action) {
 }
 
 export const Actions = {
-  setGmaps: (map, api) => ({
+  setGmaps: (map, maps) => ({
     type: Types.SET_GMAPS,
     payload: {
       map,
-      api
+      maps
     }
   }),
   setNearbyPlaces: places => ({

@@ -22,14 +22,44 @@ const createMapOptions = maps => ({
 });
 
 const Map = ({ children }) => {
-  const dispatch = useDispatch();
+  const storeDispatch = useDispatch();
 
   const [viewport, setViewport] = useState({
     lat: null,
     lng: null
   });
   const [zoom, setZoom] = useState(ZOOM);
+  const [initViewport, setInitViewport] = useState(false);
   const userLocation = useSelector(state => state.user.location);
+
+  useEffect(() => {
+    const watchId = navigator.geolocation.watchPosition(
+      position => {
+        const { latitude, longitude } = position.coords;
+        if (!initViewport) {
+          setViewport({
+            lat: latitude,
+            lng: longitude
+          });
+          setInitViewport(true);
+        }
+        if (latitude !== userLocation.lat || longitude !== userLocation.lng) {
+          storeDispatch({
+            type: UserTypes.SET_LOCATION,
+            payload: {
+              lat: latitude,
+              lng: longitude
+            }
+          });
+        }
+      },
+      null,
+      { enableHighAccurary: true }
+    );
+    return () => {
+      navigator.geolocation.clearWatch(watchId);
+    };
+  });
 
   const centerUserLocation = () => {
     setViewport({
@@ -38,23 +68,6 @@ const Map = ({ children }) => {
     });
     setZoom(ZOOM);
   };
-
-  useEffect(() => {
-    navigator.geolocation.watchPosition(
-      position => {
-        centerUserLocation();
-        dispatch({
-          type: UserTypes.SET_LOCATION,
-          payload: {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          }
-        });
-      },
-      null,
-      { enableHighAccurary: true }
-    );
-  });
 
   const handlerMapChange = map => {
     setViewport({
@@ -65,11 +78,11 @@ const Map = ({ children }) => {
   };
 
   const onGMapsAPI = (map, maps) => {
-    dispatch({
+    storeDispatch({
       type: MapTypes.SET_GMAPS,
       payload: {
         map,
-        api: maps
+        maps
       }
     });
   };
