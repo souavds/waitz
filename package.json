@@ -1,6 +1,8 @@
 {
-  "name": "waitzz-client",
-  "version": "0.1.0",
+  "name": "waitz-client",
+  "version": "1.0.0",
+  "author": "Arthur Diniz <arthurvdinizs@gmail.com>",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "start": "react-scripts start",

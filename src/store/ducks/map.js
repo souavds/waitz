@@ -17,7 +17,7 @@ export default function reducer(state = initialState, action) {
   switch (action.type) {
     case Types.SET_NEARBY_PLACES:
       return produce(state, draft => {
-        draft.nearbyPlaces = action.payload.places;
+        draft.nearbyPlaces.push(...action.payload.places);
       });
     case Types.SET_GMAPS:
       return produce(state, draft => {

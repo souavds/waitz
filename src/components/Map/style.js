@@ -13,13 +13,13 @@ export default {
     width: 100%;
   `,
   UserLocationMarker: styled.div`
-    background-color: #1da1f2;
+    background-color: #a01cd4;
     width: 15px;
     height: 15px;
     border-radius: 50%;
 
     &::before {
-      background-color: #1da1f2;
+      background-color: #a01cd4;
       content: '';
       width: 15px;
       height: 15px;
