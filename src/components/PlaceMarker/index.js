@@ -1,22 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import { IconButton } from '@material-ui/core';
+import { IconButton, Badge } from '@material-ui/core';
 import { FaMapMarker } from 'react-icons/fa';
 
 import { Types as MapTypes } from '../../store/ducks/map';
+
+import Styles from './style';
 
 import { DEFAULT_ZOOM } from '../../config/map';
 
 const useStyles = makeStyles(theme => ({
   button: {
-    margin: theme.spacing(1)
+    top: -14,
+    color: '#dd4b3e'
   }
 }));
 
 const PlaceMarker = ({ info }) => {
   const classes = useStyles();
   const storeDispatch = useDispatch();
+
+  const [counter, setCounter] = useState(0);
 
   const centerMap = () => {
     storeDispatch({
@@ -28,22 +34,24 @@ const PlaceMarker = ({ info }) => {
     storeDispatch({
       type: MapTypes.SET_ZOOM,
       payload: {
-        zoom: DEFAULT_ZOOM
+        zoom: 17
       }
     });
   };
 
   return (
-    <>
-      <IconButton
-        className={classes.button}
-        style={{ position: 'absolute' }}
-        onClick={centerMap}
-      >
-        <FaMapMarker />
+    <Styles.PlaceMarker>
+      <IconButton className={classes.button} onClick={centerMap}>
+        <Badge badgeContent={counter} color="primary">
+          <FaMapMarker />
+        </Badge>
       </IconButton>
-    </>
+    </Styles.PlaceMarker>
   );
+};
+
+PlaceMarker.propTypes = {
+  info: PropTypes.object.isRequired
 };
 
 export default PlaceMarker;
