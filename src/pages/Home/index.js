@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocalStorage, writeStorage } from '@rehooks/local-storage';
 
+import { MapContext } from '../../context/gmaps';
 import { Types as MapTypes } from '../../store/ducks/map';
 
 import Map from '../../components/Map';
@@ -9,7 +10,7 @@ import PlaceMarker from '../../components/PlaceMarker';
 
 const Home = () => {
   const storeDispatch = useDispatch();
-  const gmaps = useSelector(state => state.map.gmaps);
+  const { gmaps } = useContext(MapContext);
   const places = useSelector(state => state.map.nearbyPlaces);
   const userLocation = useSelector(state => state.user.location);
   const [placesStorage] = useLocalStorage('places');

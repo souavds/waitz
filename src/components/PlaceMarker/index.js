@@ -6,7 +6,7 @@ import { FaMapMarker } from 'react-icons/fa';
 
 import { Types as MapTypes } from '../../store/ducks/map';
 
-import { ZOOM } from '../../config/map';
+import { DEFAULT_ZOOM } from '../../config/map';
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -28,7 +28,7 @@ const PlaceMarker = ({ info }) => {
     storeDispatch({
       type: MapTypes.SET_ZOOM,
       payload: {
-        zoom: ZOOM
+        zoom: DEFAULT_ZOOM
       }
     });
   };

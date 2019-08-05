@@ -1,11 +1,40 @@
-import React from 'react';
+import React, { createContext } from 'react';
 
-export default React.createContext({
-  map: null,
-  maps: null,
-
-  setGmaps: (map, maps) => {
-    map;
-    maps;
-  }
+const MapContext = createContext({
+  gmaps: {
+    map: null,
+    maps: null
+  },
+  setGmaps: () => {}
 });
+
+class MapProvider extends React.Component {
+  setGmaps = (map, maps) => {
+    this.setState({
+      gmaps: {
+        map,
+        maps
+      }
+    });
+  };
+
+  state = {
+    gmaps: {
+      map: null,
+      maps: null
+    },
+    setGmaps: this.setGmaps
+  };
+
+  render() {
+    return (
+      <MapContext.Provider value={this.state}>
+        {this.props.children}
+      </MapContext.Provider>
+    );
+  }
+}
+
+const MapConsumer = MapContext.Consumer;
+
+export { MapContext, MapProvider, MapConsumer };

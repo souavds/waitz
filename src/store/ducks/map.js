@@ -1,25 +1,20 @@
 import produce from 'immer';
 
-import { ZOOM } from '../../config/map';
+import { DEFAULT_ZOOM } from '../../config/map';
 
 export const Types = {
-  SET_GMAPS: 'map/SET_GMAPS',
   SET_NEARBY_PLACES: 'map/SET_NEARBY_PLACES',
   SET_VIEWPORT: 'map/SET_VIEWPORT',
   SET_ZOOM: 'map/SET_ZOOM'
 };
 
 const initialState = {
-  gmaps: {
-    map: null,
-    maps: null
-  },
   current: {
     viewport: {
       lat: null,
       lng: null
     },
-    zoom: ZOOM
+    zoom: DEFAULT_ZOOM
   },
   nearbyPlaces: []
 };
@@ -29,11 +24,6 @@ export default function reducer(state = initialState, action) {
     case Types.SET_NEARBY_PLACES:
       return produce(state, draft => {
         draft.nearbyPlaces.push(...action.payload.places);
-      });
-    case Types.SET_GMAPS:
-      return produce(state, draft => {
-        draft.gmaps.map = action.payload.map;
-        draft.gmaps.maps = action.payload.maps;
       });
     case Types.SET_VIEWPORT:
       return produce(state, draft => {
@@ -49,13 +39,6 @@ export default function reducer(state = initialState, action) {
 }
 
 export const Actions = {
-  setGmaps: (map, maps) => ({
-    type: Types.SET_GMAPS,
-    payload: {
-      map,
-      maps
-    }
-  }),
   setNearbyPlaces: places => ({
     type: Types.SET_NEARBY_PLACES,
     payload: {

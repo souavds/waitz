@@ -6,14 +6,18 @@ import store from './store';
 import Routes from './router';
 import History from './router/history';
 
+import { MapProvider } from './context/gmaps';
+
 import GlobalStyle from './styles/global';
 
 function App() {
   return (
     <Provider store={store}>
       <Router history={History}>
-        <Routes />
-        <GlobalStyle />
+        <MapProvider>
+          <Routes />
+          <GlobalStyle />
+        </MapProvider>
       </Router>
     </Provider>
   );

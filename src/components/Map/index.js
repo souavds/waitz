@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import GoogleMapReact from 'google-map-react';
 
+import { MapContext } from '../../context/gmaps';
 import { Types as UserTypes } from '../../store/ducks/user';
 import { Types as MapTypes } from '../../store/ducks/map';
 
@@ -9,7 +10,7 @@ import Controls from './controls';
 import ThemeUtils from '../../utils/theme';
 import Styles from './style';
 import MapStyle from './mapStyle';
-import { ZOOM } from '../../config/map';
+import { DEFAULT_ZOOM } from '../../config/map';
 
 const createMapOptions = maps => ({
   styles:
@@ -22,6 +23,7 @@ const createMapOptions = maps => ({
 
 const Map = ({ children }) => {
   const storeDispatch = useDispatch();
+  const mapContext = useContext(MapContext);
 
   const viewport = useSelector(state => state.map.current.viewport);
   const zoom = useSelector(state => state.map.current.zoom);
@@ -81,7 +83,7 @@ const Map = ({ children }) => {
       lat: userLocation.lat,
       lng: userLocation.lng
     });
-    setZoom(ZOOM);
+    setZoom(DEFAULT_ZOOM);
   };
 
   const handlerMapChange = map => {
@@ -89,17 +91,13 @@ const Map = ({ children }) => {
       lat: map.center.lat,
       lng: map.center.lng
     });
-    setZoom(map.zoom);
+    if (zoom !== map.zoom) {
+      setZoom(map.zoom);
+    }
   };
 
   const onGMapsAPI = (map, maps) => {
-    storeDispatch({
-      type: MapTypes.SET_GMAPS,
-      payload: {
-        map,
-        maps
-      }
-    });
+    mapContext.setGmaps(map, maps);
   };
 
   return (
@@ -114,7 +112,7 @@ const Map = ({ children }) => {
         options={createMapOptions}
         onChange={handlerMapChange}
         center={{ ...viewport }}
-        defaultZoom={ZOOM}
+        defaultZoom={DEFAULT_ZOOM}
         zoom={zoom}
       >
         <Styles.UserLocationMarker {...userLocation} />
