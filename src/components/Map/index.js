@@ -9,8 +9,7 @@ import Controls from './controls';
 import ThemeUtils from '../../utils/theme';
 import Styles from './style';
 import MapStyle from './mapStyle';
-
-const ZOOM = 15;
+import { ZOOM } from '../../config/map';
 
 const createMapOptions = maps => ({
   styles:
@@ -24,13 +23,29 @@ const createMapOptions = maps => ({
 const Map = ({ children }) => {
   const storeDispatch = useDispatch();
 
-  const [viewport, setViewport] = useState({
-    lat: null,
-    lng: null
-  });
-  const [zoom, setZoom] = useState(ZOOM);
+  const viewport = useSelector(state => state.map.current.viewport);
+  const zoom = useSelector(state => state.map.current.zoom);
   const [initViewport, setInitViewport] = useState(false);
   const userLocation = useSelector(state => state.user.location);
+
+  const setViewport = ({ lat, lng }) => {
+    storeDispatch({
+      type: MapTypes.SET_VIEWPORT,
+      payload: {
+        lat,
+        lng
+      }
+    });
+  };
+
+  const setZoom = z => {
+    storeDispatch({
+      type: MapTypes.SET_ZOOM,
+      payload: {
+        zoom: z
+      }
+    });
+  };
 
   useEffect(() => {
     const watchId = navigator.geolocation.watchPosition(

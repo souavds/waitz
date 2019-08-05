@@ -9,9 +9,13 @@ const rootReducer = combineReducers({
   map: reducers.mapReducer
 });
 
+const composeEnhancers = composeWithDevTools({
+  actionsBlacklist: ['map/SET_MAPS']
+});
+
 const store = createStore(
   rootReducer,
-  composeWithDevTools(applyMiddleware(thunk))
+  composeEnhancers(applyMiddleware(thunk))
 );
 
 export default store;

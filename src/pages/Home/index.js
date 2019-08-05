@@ -38,9 +38,10 @@ const Home = () => {
     };
 
     if (!placesStorage) {
+      console.log('api');
       fetchNearbyPlaces();
     }
-    if (places.length === 0) {
+    if (places.length === 0 && placesStorage) {
       storeDispatch({
         type: MapTypes.SET_NEARBY_PLACES,
         payload: {
@@ -59,6 +60,7 @@ const Home = () => {
             key={place.place_id}
             lat={place.geometry.location.lat}
             lng={place.geometry.location.lng}
+            info={place}
           />
         ))}
       </Map>

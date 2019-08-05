@@ -13,6 +13,7 @@ export default {
     width: 100%;
   `,
   UserLocationMarker: styled.div`
+    position: absolute;
     background-color: #a01cd4;
     width: 15px;
     height: 15px;
