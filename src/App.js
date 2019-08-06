@@ -6,6 +6,7 @@ import store from './store';
 import Routes from './router';
 import History from './router/history';
 
+import { SocketProvider } from './context/socket';
 import { MapProvider } from './context/gmaps';
 
 import GlobalStyle from './styles/global';
@@ -14,10 +15,12 @@ function App() {
   return (
     <Provider store={store}>
       <Router history={History}>
-        <MapProvider>
-          <Routes />
-          <GlobalStyle />
-        </MapProvider>
+        <SocketProvider>
+          <MapProvider>
+            <Routes />
+            <GlobalStyle />
+          </MapProvider>
+        </SocketProvider>
       </Router>
     </Provider>
   );
