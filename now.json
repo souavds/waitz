@@ -1,0 +1,7 @@
+{
+  "build": {
+    "env": {
+      "REACT_APP_GMAPS_KEY": "AIzaSyBRrxEkhYO9Pk6Bp9dUzA1zjan6MXI3A3g"
+    }
+  }
+}
