@@ -7,7 +7,7 @@ const SocketContext = createContext({
 
 const SocketProvider = ({ children }) => {
   const [value] = useState({
-    socket: io('http://localhost:5000')
+    socket: io(process.env.REACT_APP_API_URL)
   });
 
   return (
