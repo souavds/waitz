@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext } from 'react';
+import React, { useState, createContext } from 'react';
 import io from 'socket.io-client';
 
 const SocketContext = createContext({
@@ -6,7 +6,7 @@ const SocketContext = createContext({
 });
 
 const SocketProvider = ({ children }) => {
-  const [value, setValue] = useState({
+  const [value] = useState({
     socket: io('http://localhost:5000')
   });
 

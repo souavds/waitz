@@ -29,9 +29,13 @@ const PlaceMarker = ({ info }) => {
   const centerMap = () => {
     setQueue(queue + 1);
     socketContext.socket.emit('queue', {
-      location: {
-        lat: info.geometry.location.lat,
-        lng: info.geometry.location.lng
+      user: 'arthur',
+      place: {
+        name: info.name,
+        location: {
+          lat: info.geometry.location.lat,
+          lng: info.geometry.location.lng
+        }
       },
       queue: queue + 1
     });
@@ -52,8 +56,8 @@ const PlaceMarker = ({ info }) => {
   useEffect(() => {
     socketContext.socket.on('queue', data => {
       if (
-        data.location.lat === info.geometry.location.lat &&
-        data.location.lng === info.geometry.location.lng
+        data.place.location.lat === info.geometry.location.lat &&
+        data.place.location.lng === info.geometry.location.lng
       ) {
         setQueue(data.queue);
       }
