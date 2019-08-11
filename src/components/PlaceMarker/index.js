@@ -5,6 +5,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { IconButton, Badge } from '@material-ui/core';
 import { FaMapMarker } from 'react-icons/fa';
 
+import Services from '../../services';
+
 import { SocketContext } from '../../context/socket';
 import { Types as MapTypes } from '../../store/ducks/map';
 
@@ -24,20 +26,37 @@ const PlaceMarker = ({ info }) => {
   const storeDispatch = useDispatch();
   const socketContext = useContext(SocketContext);
 
-  const [queue, setQueue] = useState(0);
+  const [counter, setCounter] = useState(0);
 
-  const centerMap = () => {
-    setQueue(queue + 1);
-    socketContext.socket.emit('queue', {
+  useEffect(() => {
+    let localCounter = 0;
+    Object.keys(info.queue).map(key => {
+      localCounter += info.queue[key];
+    });
+    setCounter(localCounter);
+    console.log(counter);
+    // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    socketContext.socket.on('newCheckIn', place => {
+      if (place === info._id) {
+        console.log(counter);
+        setCounter(counter + 1);
+      }
+    });
+    return () => {
+      socketContext.socket.off('newCheckIn');
+    };
+    // eslint-disable-next-line
+  }, [socketContext.socket]);
+
+  const centerMap = async () => {
+    setCounter(counter + 1);
+    socketContext.socket.emit('newCheckIn', {
       user: 'arthur',
-      place: {
-        name: info.name,
-        location: {
-          lat: info.geometry.location.lat,
-          lng: info.geometry.location.lng
-        }
-      },
-      queue: queue + 1
+      place: info._id,
+      type: 'geral'
     });
     storeDispatch({
       type: MapTypes.SET_VIEWPORT,
@@ -53,25 +72,10 @@ const PlaceMarker = ({ info }) => {
     });
   };
 
-  useEffect(() => {
-    socketContext.socket.on('queue', data => {
-      if (
-        data.place.location.lat === info.geometry.location.lat &&
-        data.place.location.lng === info.geometry.location.lng
-      ) {
-        setQueue(data.queue);
-      }
-    });
-    return () => {
-      socketContext.socket.off('queue');
-    };
-    // eslint-disable-next-line
-  }, [socketContext.socket]);
-
   return (
     <Styles.PlaceMarker>
       <IconButton className={classes.button} onClick={centerMap}>
-        <Badge badgeContent={queue} color="primary">
+        <Badge badgeContent={counter} color="primary">
           <FaMapMarker />
         </Badge>
       </IconButton>

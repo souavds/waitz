@@ -2,6 +2,8 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import GoogleMapReact from 'google-map-react';
 
+import Services from '../../services';
+
 import { MapContext } from '../../context/gmaps';
 import { Types as UserTypes } from '../../store/ducks/user';
 import { Types as MapTypes } from '../../store/ducks/map';
@@ -50,6 +52,19 @@ const Map = ({ children }) => {
   };
 
   useEffect(() => {
+    const getNearbyPlaces = async (latitude, longitude) => {
+      const response = await Services.PlaceService.getNearbyPlaces(
+        latitude,
+        longitude
+      );
+      storeDispatch({
+        type: MapTypes.SET_NEARBY_PLACES,
+        payload: {
+          places: response.data
+        }
+      });
+    };
+
     const watchId = navigator.geolocation.watchPosition(
       position => {
         const { latitude, longitude } = position.coords;
@@ -59,6 +74,7 @@ const Map = ({ children }) => {
             lng: longitude
           });
           setInitViewport(true);
+          getNearbyPlaces(latitude, longitude);
         }
         if (latitude !== userLocation.lat || longitude !== userLocation.lng) {
           storeDispatch({
@@ -104,8 +120,7 @@ const Map = ({ children }) => {
     <Styles.Container>
       <GoogleMapReact
         bootstrapURLKeys={{
-          key: process.env.REACT_APP_GMAPS_KEY,
-          libraries: ['places']
+          key: process.env.REACT_APP_GMAPS_KEY
         }}
         yesIWantToUseGoogleMapApiInternals
         onGoogleApiLoaded={({ map, maps }) => onGMapsAPI(map, maps)}
