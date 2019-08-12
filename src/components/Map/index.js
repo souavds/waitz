@@ -5,8 +5,8 @@ import GoogleMapReact from 'google-map-react';
 import Services from '../../services';
 
 import { MapContext } from '../../context/gmaps';
-import { Types as UserTypes } from '../../store/ducks/user';
-import { Types as MapTypes } from '../../store/ducks/map';
+import { Actions as UserActions } from '../../store/ducks/user';
+import { Actions as MapActions } from '../../store/ducks/map';
 
 import Controls from './controls';
 import ThemeUtils from '../../utils/theme';
@@ -27,29 +27,10 @@ const Map = ({ children }) => {
   const storeDispatch = useDispatch();
   const mapContext = useContext(MapContext);
 
-  const viewport = useSelector(state => state.map.current.viewport);
-  const zoom = useSelector(state => state.map.current.zoom);
+  const viewport = useSelector(state => state.map.config.viewport);
+  const zoom = useSelector(state => state.map.config.zoom);
   const [initViewport, setInitViewport] = useState(false);
   const userLocation = useSelector(state => state.user.location);
-
-  const setViewport = ({ lat, lng }) => {
-    storeDispatch({
-      type: MapTypes.SET_VIEWPORT,
-      payload: {
-        lat,
-        lng
-      }
-    });
-  };
-
-  const setZoom = z => {
-    storeDispatch({
-      type: MapTypes.SET_ZOOM,
-      payload: {
-        zoom: z
-      }
-    });
-  };
 
   useEffect(() => {
     const getNearbyPlaces = async (latitude, longitude) => {
@@ -57,33 +38,19 @@ const Map = ({ children }) => {
         latitude,
         longitude
       );
-      storeDispatch({
-        type: MapTypes.SET_NEARBY_PLACES,
-        payload: {
-          places: response.data
-        }
-      });
+      storeDispatch(MapActions.setNearbyPlaces(response.data));
     };
 
     const watchId = navigator.geolocation.watchPosition(
       position => {
         const { latitude, longitude } = position.coords;
         if (!initViewport) {
-          setViewport({
-            lat: latitude,
-            lng: longitude
-          });
+          storeDispatch(MapActions.setViewport(latitude, longitude));
           setInitViewport(true);
           getNearbyPlaces(latitude, longitude);
         }
         if (latitude !== userLocation.lat || longitude !== userLocation.lng) {
-          storeDispatch({
-            type: UserTypes.SET_LOCATION,
-            payload: {
-              lat: latitude,
-              lng: longitude
-            }
-          });
+          storeDispatch(UserActions.setLocation(latitude, longitude));
         }
       },
       null,
@@ -95,20 +62,14 @@ const Map = ({ children }) => {
   });
 
   const centerUserLocation = () => {
-    setViewport({
-      lat: userLocation.lat,
-      lng: userLocation.lng
-    });
-    setZoom(DEFAULT_ZOOM);
+    storeDispatch(MapActions.setViewport(userLocation.lat, userLocation.lng));
+    storeDispatch(MapActions.setZoom(DEFAULT_ZOOM));
   };
 
   const handlerMapChange = map => {
-    setViewport({
-      lat: map.center.lat,
-      lng: map.center.lng
-    });
+    storeDispatch(MapActions.setViewport(map.center.lat, map.center.lng));
     if (zoom !== map.zoom) {
-      setZoom(map.zoom);
+      storeDispatch(MapActions.setZoom(map.zoom));
     }
   };
 
@@ -137,7 +98,7 @@ const Map = ({ children }) => {
         onLocation={centerUserLocation}
         zoom={zoom}
         onZoom={z => {
-          setZoom(z);
+          storeDispatch(MapActions.setZoom(z));
         }}
       />
     </Styles.Container>

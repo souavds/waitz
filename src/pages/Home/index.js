@@ -5,7 +5,7 @@ import Map from '../../components/Map';
 import PlaceMarker from '../../components/PlaceMarker';
 
 const Home = () => {
-  const places = useSelector(state => state.map.nearbyPlaces);
+  const places = useSelector(state => state.map.places.nearby);
 
   return (
     <>
