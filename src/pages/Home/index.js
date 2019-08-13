@@ -16,7 +16,7 @@ const Home = () => {
               key={index}
               lat={place.geometry.location.lat}
               lng={place.geometry.location.lng}
-              info={place}
+              place={place}
             />
           ))}
       </Map>

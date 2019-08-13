@@ -2,35 +2,25 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-  IconButton,
-  Badge,
-  Popper,
-  Card,
-  CardContent,
-  Typography
-} from '@material-ui/core';
+import { IconButton, Badge } from '@material-ui/core';
 import { FaMapMarker } from 'react-icons/fa';
 
 import { SocketContext } from '../../context/socket';
 import { Actions as MapActions } from '../../store/ducks/map';
 
 import Styles from './style';
+import PlacePopper from './PlacePopper';
 
 import { SELECTED_ZOOM } from '../../config/map';
 
 const useStyles = makeStyles(theme => ({
-  card: {
-    width: 345,
-    maxWidth: 345
-  },
-  button: {
+  IconButton: {
     top: -14,
     color: '#dd4b3e'
   }
 }));
 
-const PlaceMarker = ({ info }) => {
+const PlaceMarker = ({ place }) => {
   const node = useRef();
   const classes = useStyles();
   const storeDispatch = useDispatch();
@@ -43,12 +33,12 @@ const PlaceMarker = ({ info }) => {
   // COUNTER
   useEffect(() => {
     setCounter(
-      Object.keys(info.queue)
-        .map(key => info.queue[key])
+      Object.keys(place.queue)
+        .map(key => place.queue[key])
         .reduce((total, num) => total + num)
     );
     // eslint-disable-next-line
-  }, [info.queue]);
+  }, [place.queue]);
 
   // HANDLE POPOVER CLOSE
   useEffect(() => {
@@ -64,44 +54,28 @@ const PlaceMarker = ({ info }) => {
     };
   }, [anchorEl]);
 
-  // useEffect(() => {
-  //   socketContext.socket.on('newCheckIn', place => {
-  //     if (place === info._id) {
-  //       console.log(counter);
-  //       setCounter(counter + 1);
-  //     }
-  //   });
-  //   return () => {
-  //     socketContext.socket.off('newCheckIn');
-  //   };
-  //   // eslint-disable-next-line
-  // }, [socketContext.socket]);
-
   const centerMap = async event => {
-    // setCounter(counter + 1);
-    socketContext.socket.emit('newCheckIn', {
-      user: 'arthur',
-      place: info._id,
-      type: 'geral'
-    });
+    // socketContext.newCheckIn({
+    //   user: 'arthur',
+    //   place: place._id,
+    //   type: 'geral'
+    // });
     storeDispatch(
       MapActions.setViewport(
-        info.geometry.location.lat,
-        info.geometry.location.lng
+        place.geometry.location.lat,
+        place.geometry.location.lng
       )
     );
     storeDispatch(MapActions.setZoom(SELECTED_ZOOM));
     setAnchorEl(anchorEl ? null : event.currentTarget);
-    // storeDispatch({
-    //   type: MapTypes.SET_SELECTED_PLACE,
-    //   payload: {
-    //     place: info
-    //   }
-    // });
+  };
+
+  const handleDetailsButton = () => {
+    storeDispatch(MapActions.setSelectedPlace(place._id));
   };
 
   const isPopperOpen = Boolean(anchorEl);
-  const id = isPopperOpen ? 'simple-popper' : undefined;
+  const id = isPopperOpen ? `place-detail-popper-${place._id}` : undefined;
 
   return (
     <Styles.PlaceMarker
@@ -110,34 +84,16 @@ const PlaceMarker = ({ info }) => {
       onMouseLeave={() => setHover(false)}
       style={{ zIndex: hover || isPopperOpen ? 1 : 0 }}
     >
-      <Popper
+      <PlacePopper
         id={id}
-        open={isPopperOpen}
         anchorEl={anchorEl}
-        placement="top"
-        disablePortal
-        modifiers={{
-          flip: {
-            enabled: false
-          },
-          preventOverflow: {
-            enabled: true,
-            boundariesElement: 'undefined'
-          }
-        }}
-      >
-        <Card className={classes.card}>
-          <CardContent>
-            <Typography variant="h6" component="h1">
-              {info.name}
-            </Typography>
-            <Typography color="textSecondary">{info.vicinity}</Typography>
-          </CardContent>
-        </Card>
-      </Popper>
+        isPopperOpen={isPopperOpen}
+        clickHandler={handleDetailsButton}
+        place={place}
+      />
       <IconButton
         aria-describedby={id}
-        className={classes.button}
+        className={classes.IconButton}
         onClick={centerMap}
       >
         <Badge badgeContent={counter} color="primary">
@@ -149,7 +105,7 @@ const PlaceMarker = ({ info }) => {
 };
 
 PlaceMarker.propTypes = {
-  info: PropTypes.object.isRequired
+  place: PropTypes.object.isRequired
 };
 
 export default PlaceMarker;

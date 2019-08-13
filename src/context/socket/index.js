@@ -12,8 +12,15 @@ const SocketContext = createContext({
 
 const SocketProvider = ({ children }) => {
   const storeDispatch = useDispatch();
+
+  const newCheckIn = data => {
+    storeDispatch(MapActions.setNewCheckIn(data.place, data.type));
+    socket.emit('newCheckIn', data);
+  };
+
   const [value] = useState({
-    socket
+    socket,
+    newCheckIn
   });
 
   useEffect(() => {
