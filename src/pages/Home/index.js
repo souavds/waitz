@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import Map from '../../components/Map';
 import PlaceMarker from '../../components/PlaceMarker';
+import PlaceDetails from '../../components/PlaceDetails';
 
 const Home = () => {
   const places = useSelector(state => state.map.places.nearby);
@@ -20,6 +21,7 @@ const Home = () => {
             />
           ))}
       </Map>
+      <PlaceDetails />
     </>
   );
 };
