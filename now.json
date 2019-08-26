@@ -1,7 +1,7 @@
 {
   "build": {
     "env": {
-      "REACT_APP_API_URL": "https://waitz.herokuapp.com/",
+      "REACT_APP_API_URL": "https://waitz.herokuapp.com",
       "REACT_APP_GMAPS_KEY": "AIzaSyB_fCG2vJMRqu69pVbdP3cNrNfu9D2Q-GE"
     }
   }
