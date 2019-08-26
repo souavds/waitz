@@ -20,8 +20,10 @@ import { Actions as PlaceActions } from '../../store/ducks/place';
 
 import { queueTypes } from '../../config/place';
 
-import Styles from './style';
 import CommentForm from './CommentForm';
+import CommentList from './CommentList';
+
+import Styles from './style';
 
 const PlaceDetails = () => {
   const classes = Styles.useStyles();
@@ -45,13 +47,12 @@ const PlaceDetails = () => {
       const res = await Services.CommentService.getCommentsById(
         placeSelected._id
       );
-      PlaceActions.setComments(placeSelected._id, res.data);
+      storeDispatch(PlaceActions.setComments(placeSelected._id, res.data));
     };
-    if (placeSelected) {
-      console.log(placeSelected.hasOwnProperty('comments'));
+    if (placeSelected && !placeSelected.hasOwnProperty('comments')) {
       getComments();
     }
-  }, [placeSelected]);
+  }, [placeSelected, storeDispatch]);
 
   return (
     <>
@@ -105,6 +106,9 @@ const PlaceDetails = () => {
                 ))}
               </Styles.CheckInContainer>
               <CommentForm />
+              {placeSelected.comments !== undefined ? (
+                <CommentList comments={placeSelected.comments} />
+              ) : null}
             </CardContent>
           </Card>
         </Styles.Container>

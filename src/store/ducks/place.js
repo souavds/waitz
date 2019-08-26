@@ -34,7 +34,10 @@ export default function reducer(state = initialState, action) {
       return produce(state, draft => {
         draft.nearby.forEach(place => {
           if (place._id === action.payload.place) {
-            place.comments.push(...action.payload.comments);
+            if (place.comments === undefined) {
+              place.comments = [];
+            }
+            place.comments.unshift(...action.payload.comments);
           }
         });
       });

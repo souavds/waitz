@@ -25,7 +25,7 @@ function App() {
   return (
     <Provider store={store}>
       <Router history={History}>
-        <SocketProvider>
+        <SocketProvider store={store}>
           <MapProvider>
             <Routes />
             <GlobalStyle />

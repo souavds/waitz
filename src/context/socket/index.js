@@ -10,22 +10,35 @@ const SocketContext = createContext({
   socket: null
 });
 
-const SocketProvider = ({ children }) => {
+const SocketProvider = ({ children, store }) => {
   const storeDispatch = useDispatch();
 
   const newCheckIn = data => {
     storeDispatch(PlaceActions.setNewCheckIn(data.place, data.type));
-    socket.emit('newCheckIn', data);
+    return socket.emit('newCheckIn', data);
+  };
+
+  const newComment = data => {
+    storeDispatch(PlaceActions.setComments(data.place_id, [data]));
+    return socket.emit('newComment', data);
   };
 
   const [value] = useState({
     socket,
-    newCheckIn
+    newCheckIn,
+    newComment
   });
 
   useEffect(() => {
     value.socket.on('newCheckIn', data => {
       storeDispatch(PlaceActions.setNewCheckIn(data.place, data.type));
+    });
+    value.socket.on('newComment', data => {
+      store.getState().place.nearby.forEach(place => {
+        if (place._id === data.place_id && place.comments !== undefined) {
+          storeDispatch(PlaceActions.setComments(data.place_id, [data]));
+        }
+      });
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value.socket]);
