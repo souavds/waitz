@@ -1,7 +1,7 @@
 import PlaceService from './place';
-import CheckInService from './checkin';
+import CommentService from './comment';
 
 export default {
   PlaceService,
-  CheckInService
+  CommentService
 };

@@ -7,6 +7,7 @@ import { FaMapMarker } from 'react-icons/fa';
 
 import { SocketContext } from '../../context/socket';
 import { Actions as MapActions } from '../../store/ducks/map';
+import { Actions as PlaceActions } from '../../store/ducks/place';
 
 import Styles from './style';
 
@@ -22,7 +23,7 @@ const useStyles = makeStyles(theme => ({
 const PlaceMarker = ({ place }) => {
   const classes = useStyles();
   const storeDispatch = useDispatch();
-  const placeSelected = useSelector(state => state.map.places.selected);
+  const placeSelected = useSelector(state => state.place.selected);
   const socketContext = useContext(SocketContext);
 
   const [counter, setCounter] = useState(0);
@@ -46,7 +47,7 @@ const PlaceMarker = ({ place }) => {
       )
     );
     storeDispatch(MapActions.setZoom(SELECTED_ZOOM));
-    storeDispatch(MapActions.setSelectedPlace(place._id));
+    storeDispatch(PlaceActions.setSelectedPlace(place._id));
   };
 
   return (

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Card,
@@ -13,21 +13,22 @@ import {
 import { FaRegHospital } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
 
-import { SocketContext } from '../../context/socket';
-import { Actions as MapActions } from '../../store/ducks/map';
+import Services from '../../services';
 
-import Styles from './style';
+import { SocketContext } from '../../context/socket';
+import { Actions as PlaceActions } from '../../store/ducks/place';
 
 import { queueTypes } from '../../config/place';
+
+import Styles from './style';
+import CommentForm from './CommentForm';
 
 const PlaceDetails = () => {
   const classes = Styles.useStyles();
 
   const storeDispatch = useDispatch();
   const placeSelected = useSelector(state =>
-    state.map.places.nearby.find(
-      place => place._id === state.map.places.selected
-    )
+    state.place.nearby.find(place => place._id === state.place.selected)
   );
   const socketContext = useContext(SocketContext);
 
@@ -38,6 +39,19 @@ const PlaceDetails = () => {
       type
     });
   };
+
+  useEffect(() => {
+    const getComments = async () => {
+      const res = await Services.CommentService.getCommentsById(
+        placeSelected._id
+      );
+      PlaceActions.setComments(placeSelected._id, res.data);
+    };
+    if (placeSelected) {
+      console.log(placeSelected.hasOwnProperty('comments'));
+      getComments();
+    }
+  }, [placeSelected]);
 
   return (
     <>
@@ -56,7 +70,7 @@ const PlaceDetails = () => {
                 <IconButton
                   aria-label="close"
                   onClick={() =>
-                    storeDispatch(MapActions.setSelectedPlace(null))
+                    storeDispatch(PlaceActions.setSelectedPlace(null))
                   }
                 >
                   <MdClose />
@@ -90,6 +104,7 @@ const PlaceDetails = () => {
                   </Badge>
                 ))}
               </Styles.CheckInContainer>
+              <CommentForm />
             </CardContent>
           </Card>
         </Styles.Container>

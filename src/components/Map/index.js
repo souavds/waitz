@@ -7,6 +7,7 @@ import Services from '../../services';
 import { MapContext } from '../../context/gmaps';
 import { Actions as UserActions } from '../../store/ducks/user';
 import { Actions as MapActions } from '../../store/ducks/map';
+import { Actions as PlaceActions } from '../../store/ducks/place';
 
 import Controls from './controls';
 import ThemeUtils from '../../utils/theme';
@@ -27,8 +28,8 @@ const Map = ({ children }) => {
   const storeDispatch = useDispatch();
   const mapContext = useContext(MapContext);
 
-  const viewport = useSelector(state => state.map.config.viewport);
-  const zoom = useSelector(state => state.map.config.zoom);
+  const viewport = useSelector(state => state.map.viewport);
+  const zoom = useSelector(state => state.map.zoom);
   const [initViewport, setInitViewport] = useState(false);
   const userLocation = useSelector(state => state.user.location);
 
@@ -38,7 +39,7 @@ const Map = ({ children }) => {
         latitude,
         longitude
       );
-      storeDispatch(MapActions.setNearbyPlaces(response.data));
+      storeDispatch(PlaceActions.setNearbyPlaces(response.data));
     };
 
     const watchId = navigator.geolocation.watchPosition(
