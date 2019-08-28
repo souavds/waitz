@@ -10,8 +10,9 @@ export default {
   `,
   CheckInContainer: styled.div`
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     margin-top: 10px;
+    padding: 8px;
   `,
   useStyles: makeStyles(theme => ({
     card: {
@@ -21,15 +22,8 @@ export default {
     checkInTitle: {
       paddingBottom: 10
     },
-    expand: {
-      transform: 'rotate(0deg)',
-      marginLeft: 'auto',
-      transition: theme.transitions.create('transform', {
-        duration: theme.transitions.duration.shortest
-      })
-    },
-    expandOpen: {
-      transform: 'rotate(180deg)'
+    cardActions: {
+      justifyContent: 'flex-end'
     },
     avatar: {
       backgroundColor: '#dd4b3e'

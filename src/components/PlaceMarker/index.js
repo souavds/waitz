@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import { IconButton, Badge } from '@material-ui/core';
 import { FaMapMarker } from 'react-icons/fa';
 
-import { SocketContext } from '../../context/socket';
 import { Actions as MapActions } from '../../store/ducks/map';
 import { Actions as PlaceActions } from '../../store/ducks/place';
 
@@ -23,8 +22,6 @@ const useStyles = makeStyles(theme => ({
 const PlaceMarker = ({ place }) => {
   const classes = useStyles();
   const storeDispatch = useDispatch();
-  const placeSelected = useSelector(state => state.place.selected);
-  const socketContext = useContext(SocketContext);
 
   const [counter, setCounter] = useState(0);
   const [hover, setHover] = useState(false);

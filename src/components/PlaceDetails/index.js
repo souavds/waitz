@@ -54,6 +54,7 @@ const PlaceDetails = () => {
       storeDispatch(PlaceActions.setComments(placeSelected._id, res.data));
     };
     if (placeSelected && !placeSelected.hasOwnProperty('comments')) {
+      setExpanded(false);
       getComments();
     }
   }, [placeSelected, storeDispatch]);
@@ -74,9 +75,10 @@ const PlaceDetails = () => {
               action={
                 <IconButton
                   aria-label="close"
-                  onClick={() =>
-                    storeDispatch(PlaceActions.setSelectedPlace(null))
-                  }
+                  onClick={() => {
+                    setExpanded(false);
+                    storeDispatch(PlaceActions.setSelectedPlace(null));
+                  }}
                 >
                   <MdClose />
                 </IconButton>
@@ -109,7 +111,7 @@ const PlaceDetails = () => {
                   </Badge>
                 ))}
               </Styles.CheckInContainer>
-              <CardActions>
+              <CardActions className={classes.cardActions}>
                 <IconButton
                   aria-label="comments"
                   onClick={() => setExpanded(!expanded)}
