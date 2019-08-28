@@ -1,9 +1,11 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Card,
   CardHeader,
   CardContent,
+  CardActions,
+  Collapse,
   Avatar,
   IconButton,
   Typography,
@@ -11,7 +13,7 @@ import {
   Fab
 } from '@material-ui/core';
 import { FaRegHospital } from 'react-icons/fa';
-import { MdClose } from 'react-icons/md';
+import { MdClose, MdChatBubble } from 'react-icons/md';
 
 import Services from '../../services';
 
@@ -33,6 +35,8 @@ const PlaceDetails = () => {
     state.place.nearby.find(place => place._id === state.place.selected)
   );
   const socketContext = useContext(SocketContext);
+
+  const [expanded, setExpanded] = useState(false);
 
   const newCheckIn = type => {
     socketContext.newCheckIn({
@@ -105,10 +109,27 @@ const PlaceDetails = () => {
                   </Badge>
                 ))}
               </Styles.CheckInContainer>
-              <CommentForm />
-              {placeSelected.comments !== undefined ? (
-                <CommentList comments={placeSelected.comments} />
-              ) : null}
+              <CardActions>
+                <IconButton
+                  aria-label="comments"
+                  onClick={() => setExpanded(!expanded)}
+                >
+                  <Badge
+                    badgeContent={
+                      placeSelected.comments ? placeSelected.comments.length : 0
+                    }
+                    color="primary"
+                  >
+                    <MdChatBubble />
+                  </Badge>
+                </IconButton>
+              </CardActions>
+              <Collapse in={expanded} timeout="auto" unmountOnExit>
+                <CommentForm />
+                {placeSelected.comments !== undefined ? (
+                  <CommentList comments={placeSelected.comments} />
+                ) : null}
+              </Collapse>
             </CardContent>
           </Card>
         </Styles.Container>
