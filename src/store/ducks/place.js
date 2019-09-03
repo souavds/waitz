@@ -4,7 +4,9 @@ export const Types = {
   SET_NEARBY_PLACES: 'place/SET_NEARBY_PLACES',
   SET_SELECTED_PLACE: 'place/SET_SELECTED_PLACE',
   SET_NEW_CHECKIN: 'place/SET_NEW_CHECKIN',
-  SET_COMMENTS: 'place/SET_COMMENTS'
+  SET_NEW_CHECKOUT: 'place/SET_NEW_CHECKOUT',
+  SET_COMMENTS: 'place/SET_COMMENTS',
+  REMOVE_COMMENT: 'place/REMOVE_COMMENT'
 };
 
 const initialState = {
@@ -30,6 +32,17 @@ export default function reducer(state = initialState, action) {
           }
         });
       });
+    case Types.SET_NEW_CHECKOUT:
+      return produce(state, draft => {
+        draft.nearby.forEach(place => {
+          if (
+            place._id === action.payload.place &&
+            place.queue[action.payload.type] > 0
+          ) {
+            place.queue[action.payload.type] -= 1;
+          }
+        });
+      });
     case Types.SET_COMMENTS:
       return produce(state, draft => {
         draft.nearby.forEach(place => {
@@ -38,6 +51,19 @@ export default function reducer(state = initialState, action) {
               place.comments = [];
             }
             place.comments.unshift(...action.payload.comments);
+          }
+        });
+      });
+    case Types.REMOVE_COMMENT:
+      return produce(state, draft => {
+        draft.nearby.forEach(place => {
+          if (place._id === action.payload.place) {
+            if (place.comments !== undefined) {
+              const index = place.comments.findIndex(
+                comment => comment._id === action.payload.comment
+              );
+              place.comments.splice(index, 1);
+            }
           }
         });
       });
@@ -66,11 +92,25 @@ export const Actions = {
       type
     }
   }),
+  setNewCheckOut: (place, type) => ({
+    type: Types.SET_NEW_CHECKOUT,
+    payload: {
+      place,
+      type
+    }
+  }),
   setComments: (place, comments) => ({
     type: Types.SET_COMMENTS,
     payload: {
       place,
       comments
+    }
+  }),
+  removeComment: (place, comment) => ({
+    type: Types.REMOVE_COMMENT,
+    payload: {
+      place,
+      comment
     }
   })
 };

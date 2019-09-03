@@ -19,7 +19,6 @@ const SocketProvider = ({ children, store }) => {
   };
 
   const newComment = data => {
-    storeDispatch(PlaceActions.setComments(data.place_id, [data]));
     return socket.emit('newComment', data);
   };
 
@@ -33,10 +32,20 @@ const SocketProvider = ({ children, store }) => {
     value.socket.on('newCheckIn', data => {
       storeDispatch(PlaceActions.setNewCheckIn(data.place, data.type));
     });
+    value.socket.on('checkout', data => {
+      storeDispatch(PlaceActions.setNewCheckOut(data.place, data.type));
+    });
     value.socket.on('newComment', data => {
       store.getState().place.nearby.forEach(place => {
         if (place._id === data.place_id && place.comments !== undefined) {
           storeDispatch(PlaceActions.setComments(data.place_id, [data]));
+        }
+      });
+    });
+    value.socket.on('removeComment', data => {
+      store.getState().place.nearby.forEach(place => {
+        if (place._id === data.place && place.comments !== undefined) {
+          storeDispatch(PlaceActions.removeComment(data.place, data.comment));
         }
       });
     });
