@@ -9,6 +9,8 @@ import { SocketContext } from '../../../context/socket';
 
 import Styles from './style';
 
+import isInsideRadius from '../../../utils/isInsideRadius';
+
 const useStyles = makeStyles(theme => ({
   Form: {
     margin: 0,
@@ -26,18 +28,32 @@ const CommentForm = () => {
   const classes = useStyles();
 
   const socketContext = useContext(SocketContext);
-  const user = useSelector(state => state.user.user);
-  const placeSelected = useSelector(state => state.place.selected);
+  const user = useSelector(state => state.user);
+  const placeSelected = useSelector(state =>
+    state.place.nearby.find(place => place._id === state.place.selected)
+  );
   const [input, setInput] = useState('');
 
   const submit = () => {
     if (user) {
-      socketContext.newComment({
-        user: user.username,
-        place_id: placeSelected,
-        text: input
-      });
-      setInput('');
+      if (
+        isInsideRadius(
+          [user.location.lng, user.location.lat],
+          [
+            placeSelected.geometry.location.lng,
+            placeSelected.geometry.location.lat
+          ]
+        )
+      ) {
+        socketContext.newComment({
+          user: user.info.username,
+          place_id: placeSelected._id,
+          text: input
+        });
+        setInput('');
+      } else {
+        toast.warning('Please be near place to comment!');
+      }
     } else {
       toast.warning('Please sign in to comment!');
     }

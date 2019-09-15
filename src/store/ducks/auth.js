@@ -88,6 +88,7 @@ export const Actions = {
         }
       })
       .catch(err => {
+        console.log(err);
         dispatch(Actions.setErrors(err.response.data.errors));
         if (err.response.status === 500) {
           toast.error(err.response.data.error);

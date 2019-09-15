@@ -28,11 +28,13 @@ import CommentList from './CommentList';
 
 import Styles from './style';
 
+import isInsideRadius from '../../utils/isInsideRadius';
+
 const PlaceDetails = () => {
   const classes = Styles.useStyles();
   const storeDispatch = useDispatch();
 
-  const user = useSelector(state => state.user.user);
+  const user = useSelector(state => state.user);
   const placeSelected = useSelector(state =>
     state.place.nearby.find(place => place._id === state.place.selected)
   );
@@ -42,11 +44,23 @@ const PlaceDetails = () => {
 
   const newCheckIn = type => {
     if (user) {
-      socketContext.newCheckIn({
-        user: user.username,
-        place: placeSelected._id,
-        type
-      });
+      if (
+        isInsideRadius(
+          [user.location.lng, user.location.lat],
+          [
+            placeSelected.geometry.location.lng,
+            placeSelected.geometry.location.lat
+          ]
+        )
+      ) {
+        socketContext.newCheckIn({
+          user: user.info.username,
+          place: placeSelected._id,
+          type
+        });
+      } else {
+        toast.warning('Please be near place to check in!');
+      }
     } else {
       toast.warning('Please sign in to check in!');
     }

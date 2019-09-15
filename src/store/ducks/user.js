@@ -6,7 +6,7 @@ export const Types = {
 };
 
 const initialState = {
-  user: null,
+  info: null,
   location: {
     lat: null,
     lng: null
@@ -17,7 +17,7 @@ export default function reducer(state = initialState, action) {
   switch (action.type) {
     case Types.SET_CURRENT_USER:
       return produce(state, draft => {
-        draft.user = action.payload;
+        draft.info = action.payload;
       });
     case Types.SET_LOCATION:
       return produce(state, draft => {
