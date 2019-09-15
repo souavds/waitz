@@ -1,5 +1,6 @@
-import produce from 'immer';
 import { toast } from 'react-toastify';
+import jwtDecode from 'jwt-decode';
+import produce from 'immer';
 
 import axios from '../../config/axios';
 import setAuthToken from '../../utils/setAuthToken';
@@ -58,7 +59,7 @@ export const Actions = {
         if (res.status === 200 && data.token) {
           localStorage.setItem('token', data.token);
           setAuthToken(data.token);
-          dispatch(UserActions.setCurrentUser(data.user));
+          dispatch(UserActions.setCurrentUser(jwtDecode(data.token)));
           dispatch(Actions.setAuth(true));
           dispatch(Actions.setLoading(false));
           toast.success(data.message);
@@ -80,7 +81,7 @@ export const Actions = {
         if (res.status === 200 && data.token) {
           localStorage.setItem('token', data.token);
           setAuthToken(data.token);
-          dispatch(UserActions.setCurrentUser(data.user));
+          dispatch(UserActions.setCurrentUser(jwtDecode(data.token)));
           dispatch(Actions.setAuth(true));
           dispatch(Actions.setLoading(false));
           toast.success(data.message);
@@ -92,5 +93,10 @@ export const Actions = {
           toast.error(err.response.data.error);
         }
       });
+  },
+  signOut: () => dispatch => {
+    localStorage.removeItem('token');
+    dispatch(Actions.setAuth(false));
+    dispatch(UserActions.setCurrentUser(null));
   }
 };

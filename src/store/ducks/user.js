@@ -6,7 +6,7 @@ export const Types = {
 };
 
 const initialState = {
-  user: {},
+  user: null,
   location: {
     lat: null,
     lng: null

@@ -12,9 +12,6 @@ export default {
   useStyles: makeStyles(theme => ({
     Signin: {
       textDecoration: 'none'
-    },
-    Avatar: {
-      cursor: 'pointer'
     }
   }))
 };
