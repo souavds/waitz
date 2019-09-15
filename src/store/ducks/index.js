@@ -1,5 +1,6 @@
-import mapReducer from './map';
 import userReducer from './user';
+import authReducer from './auth';
+import mapReducer from './map';
 import placeReducer from './place';
 
-export { mapReducer, userReducer, placeReducer };
+export { userReducer, authReducer, placeReducer, mapReducer };

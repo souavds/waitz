@@ -5,8 +5,9 @@ import thunk from 'redux-thunk';
 import * as reducers from './ducks';
 
 const rootReducer = combineReducers({
-  map: reducers.mapReducer,
   user: reducers.userReducer,
+  auth: reducers.authReducer,
+  map: reducers.mapReducer,
   place: reducers.placeReducer
 });
 

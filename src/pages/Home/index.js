@@ -1,11 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import Auth from '../../components/Auth';
 import Map from '../../components/Map';
 import PlaceMarker from '../../components/PlaceMarker';
 import PlaceDetails from '../../components/PlaceDetails';
 
-const Home = () => {
+const HomePage = () => {
   const places = useSelector(state => state.place.nearby);
 
   return (
@@ -21,9 +22,10 @@ const Home = () => {
             />
           ))}
       </Map>
+      <Auth />
       <PlaceDetails />
     </>
   );
 };
 
-export default Home;
+export default HomePage;
