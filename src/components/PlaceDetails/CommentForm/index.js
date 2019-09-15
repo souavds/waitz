@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { FilledInput, Fab } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { MdSend } from 'react-icons/md';
+import { toast } from 'react-toastify';
 
 import { SocketContext } from '../../../context/socket';
 
@@ -24,17 +25,22 @@ const useStyles = makeStyles(theme => ({
 const CommentForm = () => {
   const classes = useStyles();
 
-  const [input, setInput] = useState('');
   const socketContext = useContext(SocketContext);
+  const user = useSelector(state => state.user.user);
   const placeSelected = useSelector(state => state.place.selected);
+  const [input, setInput] = useState('');
 
   const submit = () => {
-    socketContext.newComment({
-      user_id: 'arthur',
-      place_id: placeSelected,
-      text: input
-    });
-    setInput('');
+    if (user) {
+      socketContext.newComment({
+        user: user.username,
+        place_id: placeSelected,
+        text: input
+      });
+      setInput('');
+    } else {
+      toast.warning('Please sign in to comment!');
+    }
   };
 
   return (

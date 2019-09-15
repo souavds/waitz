@@ -36,7 +36,7 @@ const CommentList = ({ comments }) => {
                     <ListItemText
                       primary={comment.text}
                       secondary={
-                        <React.Fragment>{comment.user_id}</React.Fragment>
+                        <React.Fragment>{comment.user}</React.Fragment>
                       }
                     />
                   </ListItem>

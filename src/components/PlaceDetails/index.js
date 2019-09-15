@@ -14,6 +14,7 @@ import {
 } from '@material-ui/core';
 import { FaRegHospital } from 'react-icons/fa';
 import { MdClose, MdChatBubble } from 'react-icons/md';
+import { toast } from 'react-toastify';
 
 import Services from '../../services';
 
@@ -29,8 +30,9 @@ import Styles from './style';
 
 const PlaceDetails = () => {
   const classes = Styles.useStyles();
-
   const storeDispatch = useDispatch();
+
+  const user = useSelector(state => state.user.user);
   const placeSelected = useSelector(state =>
     state.place.nearby.find(place => place._id === state.place.selected)
   );
@@ -39,11 +41,15 @@ const PlaceDetails = () => {
   const [expanded, setExpanded] = useState(false);
 
   const newCheckIn = type => {
-    socketContext.newCheckIn({
-      user: 'arthur',
-      place: placeSelected._id,
-      type
-    });
+    if (user) {
+      socketContext.newCheckIn({
+        user: user.username,
+        place: placeSelected._id,
+        type
+      });
+    } else {
+      toast.warning('Please sign in to check in!');
+    }
   };
 
   useEffect(() => {
