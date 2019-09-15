@@ -43,7 +43,7 @@ const PlaceDetails = () => {
   const [expanded, setExpanded] = useState(false);
 
   const newCheckIn = type => {
-    if (user) {
+    if (user.info) {
       if (
         isInsideRadius(
           [user.location.lng, user.location.lat],

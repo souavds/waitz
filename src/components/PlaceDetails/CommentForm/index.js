@@ -35,7 +35,7 @@ const CommentForm = () => {
   const [input, setInput] = useState('');
 
   const submit = () => {
-    if (user) {
+    if (user.info) {
       if (
         isInsideRadius(
           [user.location.lng, user.location.lat],
