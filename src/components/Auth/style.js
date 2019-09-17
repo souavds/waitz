@@ -12,6 +12,9 @@ export default {
   useStyles: makeStyles(theme => ({
     Signin: {
       textDecoration: 'none'
+    },
+    Card: {
+      minWidth: 345
     }
   }))
 };

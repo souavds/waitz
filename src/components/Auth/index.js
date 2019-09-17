@@ -4,8 +4,17 @@ import { Link } from 'react-router-dom';
 import { useLocalStorage } from '@rehooks/local-storage';
 import jwtDecode from 'jwt-decode';
 
-import { Button, Fab, Popover, Card, CardHeader } from '@material-ui/core';
+import {
+  Button,
+  Fab,
+  Popover,
+  Card,
+  CardHeader,
+  Avatar,
+  IconButton
+} from '@material-ui/core';
 import { MdPerson } from 'react-icons/md';
+import { IoIosLogOut } from 'react-icons/io';
 
 import { Actions as AuthActions } from '../../store/ducks/auth';
 
@@ -15,6 +24,7 @@ const Auth = () => {
   const classes = Styles.useStyles();
   const storeDispatch = useDispatch();
   const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
+  const user = useSelector(state => state.user.info);
   const [token] = useLocalStorage('token');
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -48,10 +58,10 @@ const Auth = () => {
           <Fab
             aria-describedby={id}
             aria-label="user"
-            elevation={2}
+            size="medium"
             onClick={e => setAnchorEl(e.currentTarget)}
           >
-            <MdPerson />
+            <MdPerson size="20" />
           </Fab>
           <Popover
             id={id}
@@ -66,8 +76,27 @@ const Auth = () => {
               vertical: 'top',
               horizontal: 'center'
             }}
+            style={{ marginTop: 15 }}
           >
-            <span>teste</span>
+            <Card className={classes.Card}>
+              <CardHeader
+                avatar={
+                  <Avatar aria-label="user-icon">
+                    <MdPerson size="20" />
+                  </Avatar>
+                }
+                action={
+                  <IconButton
+                    aria-label="signout"
+                    onClick={() => storeDispatch(AuthActions.signOut())}
+                  >
+                    <IoIosLogOut />
+                  </IconButton>
+                }
+                title={user.username}
+                subheader={user.email}
+              />
+            </Card>
           </Popover>
         </>
       )}
