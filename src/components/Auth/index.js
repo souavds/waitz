@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useLocalStorage } from '@rehooks/local-storage';
-import jwtDecode from 'jwt-decode';
 
 import {
   Button,
@@ -13,8 +12,7 @@ import {
   Avatar,
   IconButton
 } from '@material-ui/core';
-import { MdPerson } from 'react-icons/md';
-import { IoIosLogOut } from 'react-icons/io';
+import { MdPerson, MdExitToApp } from 'react-icons/md';
 
 import { Actions as AuthActions } from '../../store/ducks/auth';
 
@@ -32,10 +30,7 @@ const Auth = () => {
   useEffect(() => {
     if (token) {
       const id = setInterval(() => {
-        const decoded = jwtDecode(token);
-        if (decoded.exp < Date.now() / 1000) {
-          storeDispatch(AuthActions.signOut());
-        }
+        storeDispatch(AuthActions.checkToken());
       }, 30000);
       return () => clearInterval(id);
     }
@@ -90,7 +85,7 @@ const Auth = () => {
                     aria-label="signout"
                     onClick={() => storeDispatch(AuthActions.signOut())}
                   >
-                    <IoIosLogOut />
+                    <MdExitToApp />
                   </IconButton>
                 }
                 title={user.username}

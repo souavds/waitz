@@ -1,63 +1,39 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-import { Button, ButtonGroup } from '@material-ui/core';
-import { FaLocationArrow, FaPlus, FaMinus } from 'react-icons/fa';
+import { Fab } from '@material-ui/core';
+import { MdGpsFixed, MdCheck } from 'react-icons/md';
+
+import { SocketContext } from '../../../context/socket';
 
 import Styles from './style';
 
-const MAXZOOM = 22;
-const MINZOOM = 4;
-
-const useStyles = makeStyles(theme => ({
-  button: {
-    minWidth: 40
-  }
-}));
-
-const Controls = ({ onLocation, zoom, onZoom }) => {
-  const classes = useStyles();
-
-  const zoomIn = () => {
-    const localZoom = zoom < MAXZOOM ? zoom + 1 : zoom;
-    onZoom(localZoom);
-  };
-
-  const zoomOut = () => {
-    const localZoom = zoom > MINZOOM ? zoom - 1 : zoom;
-    onZoom(localZoom);
-  };
+const Controls = ({ onLocation }) => {
+  const socketContext = useContext(SocketContext);
+  const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
+  const user = useSelector(state => state.user);
 
   return (
     <Styles.Container>
-      <ButtonGroup
-        variant="contained"
-        aria-label="small contained button group"
-      >
-        <Button onClick={zoomIn} className={classes.button}>
-          <FaPlus />
-        </Button>
-        <Button onClick={zoomOut} className={classes.button}>
-          <FaMinus />
-        </Button>
-      </ButtonGroup>
-      <Styles.GeoControl>
-        <Button
-          variant="contained"
-          className={classes.button}
-          onClick={onLocation}
+      {isAuthenticated && user.hasCheckinActive ? (
+        <Fab
+          aria-label="location"
+          size="medium"
+          style={{ marginBottom: 10 }}
+          onClick={() => socketContext.newCheckOut(user.info.username)}
         >
-          <FaLocationArrow />
-        </Button>
-      </Styles.GeoControl>
+          <MdCheck size="20" />
+        </Fab>
+      ) : null}
+      <Fab aria-label="location" size="medium" onClick={onLocation}>
+        <MdGpsFixed size="20" />
+      </Fab>
     </Styles.Container>
   );
 };
 
 Controls.propTypes = {
-  onLocation: PropTypes.func.isRequired,
-  zoom: PropTypes.number.isRequired,
-  onZoom: PropTypes.func.isRequired
+  onLocation: PropTypes.func.isRequired
 };
 
 export default Controls;

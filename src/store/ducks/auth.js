@@ -88,7 +88,6 @@ export const Actions = {
         }
       })
       .catch(err => {
-        console.log(err);
         dispatch(Actions.setErrors(err.response.data.errors));
         if (err.response.status === 500) {
           toast.error(err.response.data.error);
@@ -99,5 +98,17 @@ export const Actions = {
     localStorage.removeItem('token');
     dispatch(Actions.setAuth(false));
     dispatch(UserActions.setCurrentUser(null));
+  },
+  checkToken: () => dispatch => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decoded = jwtDecode(token);
+      if (decoded.exp < Date.now() / 1000) {
+        dispatch(Actions.signOut());
+        return false;
+      }
+      return true;
+    }
+    return false;
   }
 };

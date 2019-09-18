@@ -19,6 +19,7 @@ import { toast } from 'react-toastify';
 import Services from '../../services';
 
 import { SocketContext } from '../../context/socket';
+import { Actions as AuthActions } from '../../store/ducks/auth';
 import { Actions as PlaceActions } from '../../store/ducks/place';
 
 import { queueTypes } from '../../config/place';
@@ -43,7 +44,7 @@ const PlaceDetails = () => {
   const [expanded, setExpanded] = useState(false);
 
   const newCheckIn = type => {
-    if (user.info) {
+    if (user.info && storeDispatch(AuthActions.checkToken())) {
       if (
         isInsideRadius(
           [user.location.lng, user.location.lat],
@@ -124,6 +125,7 @@ const PlaceDetails = () => {
                       size="small"
                       color="primary"
                       aria-label="add"
+                      disabled={user.hasCheckinActive}
                       onClick={() => newCheckIn(key[0])}
                     >
                       {key[1]}

@@ -95,13 +95,7 @@ const Map = ({ children }) => {
         <Styles.UserLocationMarker {...userLocation} />
         {children}
       </GoogleMapReact>
-      <Controls
-        onLocation={centerUserLocation}
-        zoom={zoom}
-        onZoom={z => {
-          storeDispatch(MapActions.setZoom(z));
-        }}
-      />
+      <Controls onLocation={centerUserLocation} />
     </Styles.Container>
   );
 };

@@ -1,11 +1,12 @@
 import React, { useState, useContext } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { FilledInput, Fab } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { MdSend } from 'react-icons/md';
 import { toast } from 'react-toastify';
 
 import { SocketContext } from '../../../context/socket';
+import { Actions as AuthActions } from '../../../store/ducks/auth';
 
 import Styles from './style';
 
@@ -28,6 +29,7 @@ const CommentForm = () => {
   const classes = useStyles();
 
   const socketContext = useContext(SocketContext);
+  const storeDispatch = useDispatch();
   const user = useSelector(state => state.user);
   const placeSelected = useSelector(state =>
     state.place.nearby.find(place => place._id === state.place.selected)
@@ -35,7 +37,7 @@ const CommentForm = () => {
   const [input, setInput] = useState('');
 
   const submit = () => {
-    if (user.info) {
+    if (user.info && storeDispatch(AuthActions.checkToken())) {
       if (
         isInsideRadius(
           [user.location.lng, user.location.lat],

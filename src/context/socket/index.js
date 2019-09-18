@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import io from 'socket.io-client';
 
 import { Actions as PlaceActions } from '../../store/ducks/place';
+import { Actions as UserActions } from '../../store/ducks/user';
 
 const socket = io(process.env.REACT_APP_API_URL);
 
@@ -14,8 +15,14 @@ const SocketProvider = ({ children, store }) => {
   const storeDispatch = useDispatch();
 
   const newCheckIn = data => {
+    storeDispatch(UserActions.setCheckInActive(true));
     storeDispatch(PlaceActions.setNewCheckIn(data.place, data.type));
     return socket.emit('newCheckIn', data);
+  };
+
+  const newCheckOut = user => {
+    storeDispatch(UserActions.setCheckInActive(false));
+    return socket.emit('newCheckOut', user);
   };
 
   const newComment = data => {
@@ -25,6 +32,7 @@ const SocketProvider = ({ children, store }) => {
   const [value] = useState({
     socket,
     newCheckIn,
+    newCheckOut,
     newComment
   });
 
@@ -34,6 +42,9 @@ const SocketProvider = ({ children, store }) => {
     });
     value.socket.on('checkout', data => {
       storeDispatch(PlaceActions.setNewCheckOut(data.place, data.type));
+    });
+    value.socket.on('chekInNotActive', () => {
+      storeDispatch(UserActions.setCheckInActive(false));
     });
     value.socket.on('newComment', data => {
       store.getState().place.nearby.forEach(place => {
