@@ -2,6 +2,7 @@ import React, { useState, useEffect, createContext } from 'react';
 import { useDispatch } from 'react-redux';
 import io from 'socket.io-client';
 
+import { Actions as AuthActions } from '../../store/ducks/auth';
 import { Actions as PlaceActions } from '../../store/ducks/place';
 import { Actions as UserActions } from '../../store/ducks/user';
 
@@ -17,16 +18,25 @@ const SocketProvider = ({ children, store }) => {
   const newCheckIn = data => {
     storeDispatch(UserActions.setCheckInActive(true));
     storeDispatch(PlaceActions.setNewCheckIn(data.place, data.type));
-    return socket.emit('newCheckIn', data);
+    return socket.emit('newCheckIn', {
+      ...data,
+      token: localStorage.getItem('token')
+    });
   };
 
   const newCheckOut = user => {
     storeDispatch(UserActions.setCheckInActive(false));
-    return socket.emit('newCheckOut', user);
+    return socket.emit('newCheckOut', {
+      user,
+      token: localStorage.getItem('token')
+    });
   };
 
   const newComment = data => {
-    return socket.emit('newComment', data);
+    return socket.emit('newComment', {
+      ...data,
+      token: localStorage.getItem('token')
+    });
   };
 
   const [value] = useState({
@@ -59,6 +69,9 @@ const SocketProvider = ({ children, store }) => {
           storeDispatch(PlaceActions.removeComment(data.place, data.comment));
         }
       });
+    });
+    value.socket.on('invalidToken', () => {
+      storeDispatch(AuthActions.signOut());
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value.socket]);
