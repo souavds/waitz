@@ -14,6 +14,10 @@ export default {
     margin-top: 10px;
     padding: 8px;
   `,
+  CheckInSingle: styled.div`
+    display: flex;
+    align-items: center;
+  `,
   useStyles: makeStyles(theme => ({
     card: {
       maxWidth: 425,

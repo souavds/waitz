@@ -26,6 +26,7 @@ import { queueTypes } from '../../config/place';
 
 import CommentForm from './CommentForm';
 import CommentList from './CommentList';
+import Suggestion from './Suggestion';
 
 import Styles from './style';
 
@@ -36,12 +37,14 @@ const PlaceDetails = () => {
   const storeDispatch = useDispatch();
 
   const user = useSelector(state => state.user);
+  const nearbyPlaces = useSelector(state => state.place.nearby);
   const placeSelected = useSelector(state =>
     state.place.nearby.find(place => place._id === state.place.selected)
   );
   const socketContext = useContext(SocketContext);
 
   const [expanded, setExpanded] = useState(false);
+  const [suggestions, setSuggestions] = useState({});
 
   const newCheckIn = type => {
     if (user.info && storeDispatch(AuthActions.checkToken())) {
@@ -80,6 +83,19 @@ const PlaceDetails = () => {
     }
   }, [placeSelected, storeDispatch]);
 
+  useEffect(() => {
+    if (nearbyPlaces.length) {
+      const localSuggestions = {};
+      Object.entries(queueTypes).forEach((key, index) => {
+        const temp = [...nearbyPlaces];
+        localSuggestions[key[0]] = temp.sort((a, b) =>
+          a.queue[key[0]] > b.queue[key[0]] ? 1 : -1
+        );
+      });
+      setSuggestions(localSuggestions);
+    }
+  }, [nearbyPlaces]);
+
   return (
     <>
       {placeSelected ? (
@@ -115,22 +131,28 @@ const PlaceDetails = () => {
               </Typography>
               <Styles.CheckInContainer>
                 {Object.entries(queueTypes).map((key, index) => (
-                  <Badge
-                    key={index}
-                    badgeContent={placeSelected.queue[key[0]]}
-                    color="primary"
-                  >
-                    <Fab
-                      variant="extended"
-                      size="small"
+                  <Styles.CheckInSingle key={index}>
+                    <Badge
+                      badgeContent={placeSelected.queue[key[0]]}
                       color="primary"
-                      aria-label="add"
-                      disabled={user.hasCheckinActive}
-                      onClick={() => newCheckIn(key[0])}
                     >
-                      {key[1]}
-                    </Fab>
-                  </Badge>
+                      <Fab
+                        variant="extended"
+                        size="small"
+                        color="primary"
+                        aria-label="check-in"
+                        disabled={user.hasCheckinActive}
+                        onClick={() => newCheckIn(key[0])}
+                      >
+                        {key[1]}
+                      </Fab>
+                    </Badge>
+                    <Suggestion
+                      places={suggestions[key[0]]}
+                      type={key[0]}
+                      label={key[1]}
+                    />
+                  </Styles.CheckInSingle>
                 ))}
               </Styles.CheckInContainer>
               <CardActions className={classes.cardActions}>

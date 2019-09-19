@@ -71,6 +71,9 @@ const Auth = () => {
               vertical: 'top',
               horizontal: 'center'
             }}
+            PaperProps={{
+              style: { borderRadius: 15 }
+            }}
             style={{ marginTop: 15 }}
           >
             <Card className={classes.Card}>
