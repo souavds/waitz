@@ -1,5 +1,6 @@
 import React, { useState, useEffect, createContext } from 'react';
 import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
 import io from 'socket.io-client';
 
 import { Actions as AuthActions } from '../../store/ducks/auth';
@@ -52,6 +53,12 @@ const SocketProvider = ({ children, store }) => {
     });
     value.socket.on('checkout', data => {
       storeDispatch(PlaceActions.setNewCheckOut(data.place, data.type));
+      if (
+        data.user === store.getState().user.info.username &&
+        store.getState().user.hasCheckinActive
+      ) {
+        storeDispatch(UserActions.setCheckInActive(false));
+      }
     });
     value.socket.on('chekInNotActive', () => {
       storeDispatch(UserActions.setCheckInActive(false));
@@ -69,6 +76,11 @@ const SocketProvider = ({ children, store }) => {
           storeDispatch(PlaceActions.removeComment(data.place, data.comment));
         }
       });
+    });
+    value.socket.on('userAlreadyHasCheckIn', data => {
+      storeDispatch(PlaceActions.setNewCheckOut(data.place, data.type));
+      storeDispatch(UserActions.setCheckInActive(true));
+      toast.error("Ops! It seems that you've had already an active checkin!");
     });
     value.socket.on('invalidToken', () => {
       storeDispatch(AuthActions.signOut());
