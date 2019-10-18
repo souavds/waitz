@@ -12,6 +12,10 @@ export default {
     background-image: url(${BackgroundImage});
     background-size: 25%;
     background-repeat: repeat;
+
+    @media screen and (max-width: 768px) {
+      background-size: contain;
+    }
   `,
   Header: styled.div`
     display: flex;
@@ -21,7 +25,11 @@ export default {
   useStyles: makeStyles(theme => ({
     Paper: {
       width: 450,
-      padding: '48px 40px 36px'
+      padding: '48px 40px 36px',
+      '@media screen and (max-width: 425px)': {
+        width: '90%',
+        padding: '48px 30px 36px'
+      }
     }
   }))
 };

@@ -127,7 +127,7 @@ const PlaceDetails = () => {
                 component="h5"
                 className={classes.checkInTitle}
               >
-                Faça um check-in!
+                Escolha sua especialidade e faça seu check-in!
               </Typography>
               <Styles.CheckInContainer>
                 {Object.entries(queueTypes).map((key, index) => (
@@ -159,6 +159,7 @@ const PlaceDetails = () => {
                 <IconButton
                   aria-label="comments"
                   onClick={() => setExpanded(!expanded)}
+                  className={classes.commentButton}
                 >
                   <Badge
                     badgeContent={

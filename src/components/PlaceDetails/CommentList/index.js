@@ -17,12 +17,12 @@ const CommentList = ({ comments }) => {
     <>
       {comments.length > 0 ? (
         <AutoSizer
-          style={{ height: comments.length < 3 ? comments.length * 72 : 216 }}
+          style={{ height: comments.length < 3 ? comments.length * 72 : 146 }}
         >
           {({ height, width }) => (
             <Scrollbar
               style={{
-                height: comments.length < 3 ? comments.length * 72 : 216,
+                height: comments.length < 2 ? comments.length * 72 : 146,
                 width
               }}
               className={classes.List}

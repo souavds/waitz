@@ -96,7 +96,7 @@ const Suggestion = ({ places, type, label }) => {
               <Scrollbar
                 style={{
                   height: 250,
-                  width: 320
+                  width: 288
                 }}
               >
                 {places.map((place, index) => (
