@@ -99,43 +99,45 @@ const Suggestion = ({ places, type, label }) => {
                   width: 288
                 }}
               >
-                {places.map((place, index) => (
-                  <React.Fragment key={`suggestion-${index}`}>
-                    <ButtonBase
-                      style={{ width: '100%' }}
-                      onClick={() => setPlace(place)}
-                    >
-                      <ListItem alignItems="flex-start">
-                        <ListItemAvatar>
-                          <Avatar
-                            aria-label="hospital"
-                            className={classes.avatar}
-                          >
-                            <FaRegHospital />
-                          </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={`${place.name.slice(0, 20)}...`}
-                          secondary={
-                            <React.Fragment>
-                              <Typography
-                                component="span"
-                                variant="body2"
-                                color="textPrimary"
+                {places !== undefined
+                  ? places.map((place, index) => (
+                      <React.Fragment key={`suggestion-${index}`}>
+                        <ButtonBase
+                          style={{ width: '100%' }}
+                          onClick={() => setPlace(place)}
+                        >
+                          <ListItem alignItems="flex-start">
+                            <ListItemAvatar>
+                              <Avatar
+                                aria-label="hospital"
+                                className={classes.avatar}
                               >
-                                {label}
-                              </Typography>
-                              {` - ${place.queue[type]}`}
-                            </React.Fragment>
-                          }
-                        />
-                      </ListItem>
-                    </ButtonBase>
-                    {index !== places.length ? (
-                      <Divider variant="inset" component="li" />
-                    ) : null}
-                  </React.Fragment>
-                ))}
+                                <FaRegHospital />
+                              </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText
+                              primary={`${place.name.slice(0, 20)}...`}
+                              secondary={
+                                <React.Fragment>
+                                  <Typography
+                                    component="span"
+                                    variant="body2"
+                                    color="textPrimary"
+                                  >
+                                    {label}
+                                  </Typography>
+                                  {` - ${place.queue[type]}`}
+                                </React.Fragment>
+                              }
+                            />
+                          </ListItem>
+                        </ButtonBase>
+                        {index !== places.length ? (
+                          <Divider variant="inset" component="li" />
+                        ) : null}
+                      </React.Fragment>
+                    ))
+                  : null}
               </Scrollbar>
             </List>
           </CardContent>

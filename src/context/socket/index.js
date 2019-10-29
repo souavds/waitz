@@ -80,7 +80,7 @@ const SocketProvider = ({ children, store }) => {
     value.socket.on('userAlreadyHasCheckIn', data => {
       storeDispatch(PlaceActions.setNewCheckOut(data.place, data.type));
       storeDispatch(UserActions.setCheckInActive(true));
-      toast.error("Ops! It seems that you've had already an active checkin!");
+      toast.error('Ops! It seems that you already have an active checkin!');
     });
     value.socket.on('invalidToken', () => {
       storeDispatch(AuthActions.signOut());
