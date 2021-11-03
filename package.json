@@ -36,7 +36,7 @@
     "socket.io-client": "^2.2.0",
     "styled-components": "^4.3.2",
     "use-react-router": "^1.0.7",
-    "validator": "^11.1.0"
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "babel-plugin-styled-components": "^1.10.6",
